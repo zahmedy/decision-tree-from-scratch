@@ -1,0 +1,38 @@
+Metadata-Version: 2.4
+Name: decision-tree-from-scratch
+Version: 0.1.0
+Summary: A decision tree implementation built from scratch
+Author-email: Your Name <your.email@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/yourusername/decision-tree-from-scratch
+Project-URL: Repository, https://github.com/yourusername/decision-tree-from-scratch
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: numpy>=1.20.0
+Requires-Dist: pandas>=1.3.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: black>=21.0; extra == "dev"
+Requires-Dist: flake8>=3.9; extra == "dev"
+
+# decision-tree-from-scratch
+Learning decision-tree internals by creating it from scratch  
+
+```
+decision-tree-from-scratch/
+  README.md
+  pyproject.toml            # optional, but nice
+  src/
+    tree/
+      __init__.py
+      criteria.py           # gini/entropy, info gain
+      node.py               # Node dataclass
+      split.py              # best split search
+      decision_tree.py      # fit/predict
+      utils.py              # small helpers
+  tests/
+    test_criteria.py
+    test_tree_small.py
+  examples/
+    train_iris_like.py      # small demo using sklearn datasets (only for data)
+```
