@@ -54,4 +54,3 @@ class DecisionTreeClassifier:
             return self._predict_one(x, node.left)
         else:
             return self._predict_one(x, node.right)
-

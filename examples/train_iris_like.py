@@ -1,5 +1,5 @@
 import numpy as np
-from decision_tree.deicion_tree import DecisionTreeClassifier
+from decision_tree import DecisionTreeClassifier
 
 X = np.array([[2], [4], [6], [8]], dtype=float)
 y = np.array([0,0,1,1], dtype=int)
