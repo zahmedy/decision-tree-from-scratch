@@ -1,5 +1,5 @@
 import numpy as np
-from .criteria import gini_gain
+from decision_tree.criteria import gini_gain
 
 
 def best_split(X: np.ndarray, y: np.ndarray):

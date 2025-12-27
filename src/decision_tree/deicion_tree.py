@@ -3,6 +3,7 @@ from decision_tree.node import Node
 from decision_tree.split import best_split
 from decision_tree.criteria import gini
 
+
 class DecisionTreeClassifier:
     def __init__(self, max_depth=5, min_samples_split=2):
         self.max_depth = max_depth

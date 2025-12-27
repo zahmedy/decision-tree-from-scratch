@@ -7,10 +7,10 @@ name = "decision-tree-from-scratch"
 version = "0.1.0"
 description = "A decision tree implementation built from scratch"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "Zayed Ahmed", email = "zayed.ahmd@gmail.com"}
 ]
 
 dependencies = [
@@ -25,9 +25,8 @@ dev = [
     "flake8>=3.9",
 ]
 
-[project.urls]
-Homepage = "https://github.com/yourusername/decision-tree-from-scratch"
-Repository = "https://github.com/yourusername/decision-tree-from-scratch"
-
 [tool.setuptools]
-packages = ["decision_tree"]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
