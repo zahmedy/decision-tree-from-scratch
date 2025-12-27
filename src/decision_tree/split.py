@@ -23,7 +23,7 @@ def best_split(X: np.ndarray, y: np.ndarray):
         for threshold in thresholds:
             # 1) compute left_idx and right_idx using np.where
             left_idx = np.where(values <= threshold)[0]
-            right_idx = np.where(threshold > values)[0]
+            right_idx = np.where(values > threshold)[0]
 
             # 2) skip invalid splits
             if len(left_idx) == 0 or len(right_idx) == 0:
