@@ -5,10 +5,13 @@ from decision_tree.criteria import gini
 
 
 class DecisionTreeClassifier:
-    def __init__(self, max_depth=5, min_samples_split=2):
+    def __init__(self, max_depth=5, min_samples_split=2, seed=42, max_features=None):
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
         self.root = None
+        self.max_features = max_features
+        self.seed = seed
+        self.rng = np.random.default_rng(self.seed)
 
     def fit(self, X: np.ndarray, y: np.ndarray):
         self.root = self._build_tree(X, y, depth=0)
@@ -21,9 +24,24 @@ class DecisionTreeClassifier:
         # 1) stopping conditions
         if depth >= self.max_depth or len(y) < self.min_samples_split or gini(y) == 0.0:
             return Node(is_leaf=True, prediction=self._majority_class(y))
+        
+        n_features = X.shape[1]
+
+        feature_indices = None
+        if self.max_features is None:
+            feature_indices = None 
+        elif self.max_features == "sqrt":
+            k = max(1, int(np.sqrt(n_features)))
+            feature_indices = self.rng.choice(n_features, size=k, replace=False)
+        elif isinstance(self.max_features, int):
+            k = min(n_features, max(1, self.max_features))
+            feature_indices = self.rng.choice(n_features, size=k, replace=False)
+        else:
+            raise ValueError("max_features must be None, 'sqrt', or int")
+
 
         # 2) find best split
-        feature, threshold, gain, left_idx, right_idx = best_split(X, y)
+        feature, threshold, gain, left_idx, right_idx = best_split(X, y, feature_indices=feature_indices)
 
         # 3) if no useful split
         if feature is None or gain <= 1e-12:

@@ -20,10 +20,13 @@ class RandomForestClassifier:
     def fit(self, X: np.ndarray, y: np.ndarray):
         self.trees = []
         for _ in range(self.n_estimators):
+            tree_seed = int(self.rng.integers(0, 1_000_000_000))
             Xb, yb = self._bootstrap_sample(X, y)
             tree = DecisionTreeClassifier(
                 max_depth=self.max_depth,
-                min_samples_split=self.min_samples_split
+                min_samples_split=self.min_samples_split,
+                seed=tree_seed,
+                max_features="sqrt"
                 )
             tree.fit(Xb, yb)
             self.trees.append(tree)
