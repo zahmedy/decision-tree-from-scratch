@@ -14,7 +14,7 @@ class RandomForestClassifier:
 
     def _bootstrap_sample(self, X: np.ndarray, y: np.ndarray):
         n = X.shape[0]
-        idx = self.rng.choice(0,n)
+        idx = self.rng.integers(0, n, size=n)
         return X[idx], y[idx]
     
     def fit(self, X: np.ndarray, y: np.ndarray):
@@ -22,20 +22,18 @@ class RandomForestClassifier:
         for _ in range(self.n_estimators):
             Xb, yb = self._bootstrap_sample(X, y)
             tree = DecisionTreeClassifier(
-                self.max_depth, 
-                self.min_samples_split)
+                max_depth=self.max_depth,
+                min_samples_split=self.min_samples_split
+                )
             tree.fit(Xb, yb)
             self.trees.append(tree)
 
         return self
     
     def predict(self, X: np.ndarray) -> np.ndarray:
-        all_preds = []
-        for tree in self.trees:
-            pred = tree.predict(X)
-            all_preds.append(pred)
+        all_preds = np.array([tree.predict(X) for tree in self.trees])
 
-        y_hat = np.ndarray(np.argmax(all_preds))
+        y_hat = (all_preds.mean(axis=0) >= 0.5).astype(int)
         return y_hat
 
 
