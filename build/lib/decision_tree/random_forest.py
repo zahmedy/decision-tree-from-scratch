@@ -11,34 +11,25 @@ class RandomForestClassifier:
         self.seed = seed
         self.trees = []
         self.rng = np.random.default_rng(seed)
-        self.oob_masks = []
-        self.oob_score_ = None
 
     def _bootstrap_sample(self, X: np.ndarray, y: np.ndarray):
         n = X.shape[0]
         idx = self.rng.integers(0, n, size=n)
-        return X[idx], y[idx], idx
+        return X[idx], y[idx]
     
     def fit(self, X: np.ndarray, y: np.ndarray):
-        
         self.trees = []
         for _ in range(self.n_estimators):
             tree_seed = int(self.rng.integers(0, 1_000_000_000))
-            Xb, yb, idx = self._bootstrap_sample(X, y)
-            
-            n = X.shape[0]
-            oob_mask = np.ones(n, dtype=bool)
-            oob_mask[idx] = False
-
+            Xb, yb = self._bootstrap_sample(X, y)
             tree = DecisionTreeClassifier(
                 max_depth=self.max_depth,
                 min_samples_split=self.min_samples_split,
                 seed=tree_seed,
                 max_features="sqrt"
-            )
+                )
             tree.fit(Xb, yb)
             self.trees.append(tree)
-            self.oob_masks.append(oob_mask)
 
         return self
     

@@ -2,8 +2,9 @@ README.md
 pyproject.toml
 src/decision_tree/__init__.py
 src/decision_tree/criteria.py
-src/decision_tree/deicion_tree.py
+src/decision_tree/decision_tree.py
 src/decision_tree/node.py
+src/decision_tree/random_forest.py
 src/decision_tree/split.py
 src/decision_tree/utils.py
 src/decision_tree_from_scratch.egg-info/PKG-INFO

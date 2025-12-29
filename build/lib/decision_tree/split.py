@@ -2,7 +2,7 @@ import numpy as np
 from decision_tree.criteria import gini_gain
 
 
-def best_split(X: np.ndarray, y: np.ndarray):
+def best_split(X: np.ndarray, y: np.ndarray, feature_indices=None):
     n_samples, n_features = X.shape
 
     best_feature = None
@@ -11,7 +11,10 @@ def best_split(X: np.ndarray, y: np.ndarray):
     best_left_idx = None
     best_right_idx = None
 
-    for feature_index in range(n_features):
+    if feature_indices == None:
+        feature_indices = range(n_features)
+
+    for feature_index in feature_indices:
         values = X[:, feature_index]
         unique_vals = np.unique(values)
 
