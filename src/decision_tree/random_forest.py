@@ -19,6 +19,27 @@ class RandomForestClassifier:
         idx = self.rng.integers(0, n, size=n)
         return X[idx], y[idx], idx
     
+    def _compute_oob_score(self, X: np.ndarray, y: np.ndarray) -> float:
+        n = X.shape[0]
+
+        vote_sum = np.zeros(n, dtype=float)
+        votes_count = np.zeros(n, dtype=int)
+    
+        for tree, oob_mask in zip(self.trees, self.oob_masks):
+            oob_idx = np.where(oob_mask)[0]
+            if oob_idx.size == 0:
+                continue
+            
+            preds = tree.predict(X[oob_idx])
+            vote_sum[oob_idx] += preds
+            votes_count[oob_idx] += 1
+
+        valid = votes_count > 0
+        oob_pred = np.zeros(n, dtype=int)
+        oob_pred[valid] = (vote_sum[valid] / votes_count[valid] >= 0.5).astype(int)
+
+        return (oob_pred[valid] == y[valid]).mean()
+
     def fit(self, X: np.ndarray, y: np.ndarray):
         
         self.trees = []
@@ -39,6 +60,7 @@ class RandomForestClassifier:
             tree.fit(Xb, yb)
             self.trees.append(tree)
             self.oob_masks.append(oob_mask)
+            self.oob_score_ = self._compute_oob_score(X, y)
 
         return self
     
