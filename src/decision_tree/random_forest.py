@@ -14,6 +14,7 @@ class RandomForestClassifier:
         self.rng = np.random.default_rng(seed)
         self.oob_masks = []
         self.oob_score_ = None
+        self.n_classes = 0
 
     def _bootstrap_sample(self, X: np.ndarray, y: np.ndarray):
         n = X.shape[0]
@@ -48,6 +49,8 @@ class RandomForestClassifier:
             tree_seed = int(self.rng.integers(0, 1_000_000_000))
             Xb, yb, idx = self._bootstrap_sample(X, y)
             
+            self.n_classes_ = int(np.max(y)) + 1
+
             n = X.shape[0]
             oob_mask = np.ones(n, dtype=bool)
             oob_mask[idx] = False
@@ -66,10 +69,18 @@ class RandomForestClassifier:
         return self
     
     def predict(self, X: np.ndarray) -> np.ndarray:
-        all_preds = np.array([tree.predict(X) for tree in self.trees])
+        # all_preds = np.array([tree.predict(X) for tree in self.trees])
+        proba = self.predict_porba(X)
 
-        y_hat = (all_preds.mean(axis=0) >= 0.5).astype(int)
-        return y_hat
+        # y_hat = (all_preds.mean(axis=0) >= 0.5).astype(int)
+        return np.argmax(proba, axis=1)
+    
+    def predict_porba(self, X):
+        proba_sum = np.zeros((X[0], X[1]))
+        for tree in self.trees:
+            proba_sum += tree.predict_proba(X)
+
+        return proba_sum / self.n_estimators
 
 
     
