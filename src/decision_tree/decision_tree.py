@@ -12,8 +12,10 @@ class DecisionTreeClassifier:
         self.max_features = max_features
         self.seed = seed
         self.rng = np.random.default_rng(self.seed)
+        self.n_classes_ = 0
 
     def fit(self, X: np.ndarray, y: np.ndarray):
+        self.n_classes_ = int(np.max(y)) + 1
         self.root = self._build_tree(X, y, depth=0)
         return self
 
@@ -23,7 +25,9 @@ class DecisionTreeClassifier:
     def _build_tree(self, X: np.ndarray, y: np.ndarray, depth: int) -> Node:
         # 1) stopping conditions
         if depth >= self.max_depth or len(y) < self.min_samples_split or gini(y) == 0.0:
-            return Node(is_leaf=True, prediction=self._majority_class(y))
+            counts = np.bincount(y, minlength=self.n_classes_)
+            pred = int(counts.argmax())
+            return Node(is_leaf=True, prediction=pred, class_counts=counts)
         
         n_features = X.shape[1]
 
@@ -45,7 +49,9 @@ class DecisionTreeClassifier:
 
         # 3) if no useful split
         if feature is None or gain <= 1e-12:
-            return Node(is_leaf=True, prediction=self._majority_class(y))
+            counts = np.bincount(y, minlength=self.n_classes_)
+            pred = int(counts.argmax())
+            return Node(is_leaf=True, prediction=pred, class_counts=counts)
 
         # 4) split data and recurse
         left_child = self._build_tree(X[left_idx], y[left_idx], depth + 1)
@@ -72,3 +78,18 @@ class DecisionTreeClassifier:
             return self._predict_one(x, node.left)
         else:
             return self._predict_one(x, node.right)
+        
+    def predict_proba(self, X: np.ndarray):
+        return np.vstack([self._predict_proba_one(x, self.root) for x in X])
+
+    def _predict_proba_one(self, x: np.ndarray, node: Node):
+        if node.is_leaf:
+            proba = node.class_counts / node.class_counts.sum()
+            return proba
+
+        # decide direction
+        if x[node.feature_index] <= node.threshold:
+            return self._predict_proba_one(x, node.left)
+        else:
+            return self._predict_proba_one(x, node.right)
+        
