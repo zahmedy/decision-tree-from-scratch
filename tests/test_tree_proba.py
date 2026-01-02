@@ -1,15 +1,19 @@
 import numpy as np
+from decision_tree.decision_tree import DecisionTreeClassifier
 
-from decision_tree import DecisionTreeClassifier
+def test_tree_predict_proba_sums_to_one():
+    X = np.array([
+        [0.0, 1.0],
+        [1.0, 0.0],
+        [0.0, 0.0],
+        [1.0, 1.0],
+    ])
+    y = np.array([0, 1, 0, 1])
 
+    tree = DecisionTreeClassifier(max_depth=2, min_samples_split=2, seed=42)
+    tree.fit(X, y)
 
-def test_proba_small_dataset():
-    X = np.array([[0.0], [1.0], [2.0], [3.0]])
-    y = np.array([0, 0, 1, 1])
+    proba = tree.predict_proba(X)
 
-    clf = DecisionTreeClassifier(max_depth=3, min_samples_split=2).fit(X, y)
-
-    preds = clf.predict(X)
-    proba = clf.predict_proba(X)
-
-    assert proba.sum() == 1
+    assert proba.shape == (X.shape[0], 2)
+    assert np.allclose(proba.sum(axis=1), 1.0)
