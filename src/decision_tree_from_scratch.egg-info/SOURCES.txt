@@ -13,4 +13,6 @@ src/decision_tree_from_scratch.egg-info/dependency_links.txt
 src/decision_tree_from_scratch.egg-info/requires.txt
 src/decision_tree_from_scratch.egg-info/top_level.txt
 tests/test_criteria.py
+tests/test_rf_proba.py
+tests/test_tree_proba.py
 tests/test_tree_small.py
